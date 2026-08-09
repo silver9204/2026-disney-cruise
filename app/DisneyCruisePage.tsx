@@ -303,8 +303,8 @@ const onboardExplorers = [
     items: [
       { title: "Disney Seas the Adventure", meta: "Walt Disney Theatre · INCLUDED", image: "/images/activity-disney-seas.jpg", alt: "Disney Seas the Adventure 무대 공연", description: "미키와 친구들이 이끄는 시그니처 환영 공연. 첫날 또는 항해 초반 관람 우선순위입니다.", images: [
         { src: "/images/activity-disney-seas.jpg", alt: "Disney Adventure에서 공연 중인 Disney Seas the Adventure 피날레", kind: "DISNEY ADVENTURE", caption: "미키와 친구들이 한 무대에 모이는 실제 피날레" },
-        { src: "/images/activity-seas-2.jpg", alt: "Disney Seas the Adventure 전체 출연진", kind: "PRODUCTION REFERENCE", caption: "Disney Cruise Line 공통 프로덕션의 전체 캐릭터 구성" },
-        { src: "/images/activity-seas-3.jpg", alt: "Disney Seas the Adventure의 선원 의상 공연", kind: "PRODUCTION REFERENCE", caption: "선원 의상과 원형 LED 무대를 가까이 본 장면" },
+        { src: "/images/activity-seas-crush.jpg", alt: "Disney Seas the Adventure에서 Goofy와 Crush가 만나는 장면", kind: "SHOW SCENE", caption: "Goofy가 Crush에게 흐름을 타는 법을 배우는 Finding Nemo 장면" },
+        { src: "/images/activity-theatre-1.jpeg", alt: "Disney Adventure Walt Disney Theatre의 객석과 무대", kind: "ACTUAL THEATRE", caption: "공연 시작 전 확인하는 실제 Walt Disney Theatre의 객석·무대 전경" },
       ] },
       { title: "Remember", meta: "WALL-E & EVE · INCLUDED", image: "/images/activity-remember.jpg", alt: "WALL-E와 EVE가 등장하는 Remember 공연", description: "WALL-E가 EVE의 기억을 되살리는 Disney Adventure 오리지널 뮤지컬입니다.", images: [
         { src: "/images/activity-remember.jpg", alt: "Remember 공연의 WALL-E와 EVE 피날레", kind: "OFFICIAL PHOTO", caption: "WALL-E와 EVE, 디즈니 캐릭터가 함께하는 피날레" },
