@@ -531,10 +531,6 @@ export default function DisneyCruisePage() {
           <div className="eyebrow"><span>✦</span> 4-NIGHT MAGIC AT SEA</div>
           <h1>새해를 여는<br /><em>마법 같은 항해</em></h1>
           <p className="hero-copy">싱가포르에서 출발하는 4박의 Disney Adventure.<br />우리 가족의 예약, 항공, 객실과 준비 일정을 한곳에 모았습니다.</p>
-          <div className="hero-actions">
-            <a className="button button-gold" href="#voyage">여행 계획 보기 <span>→</span></a>
-            <a className="button button-ghost" href="#stateroom">15150호 둘러보기</a>
-          </div>
         </div>
         <div className="ship-frame">
           <img src={assetPath("/images/disney-adventure-ship.jpg")} alt="싱가포르에 입항한 Disney Adventure 크루즈선" />
