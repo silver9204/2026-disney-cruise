@@ -459,6 +459,7 @@ export default function DisneyCruisePage() {
   const [activeOnboard, setActiveOnboard] = useState<Record<string, number>>({ activities: 0, attractions: 0, restaurants: 0 });
   const [activeOnboardSlides, setActiveOnboardSlides] = useState<Record<string, number>>({});
   const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const days = useMemo(() => formatCountdown(), []);
 
   useEffect(() => {
@@ -490,13 +491,25 @@ export default function DisneyCruisePage() {
 
   return (
     <main>
-      <header className="topbar">
-        <a className="brand" href="#top" aria-label="페이지 맨 위로">
+      <header className={`topbar${mobileNavOpen ? " mobile-nav-open" : ""}`}>
+        <a className="brand" href="#top" aria-label="페이지 맨 위로" onClick={() => setMobileNavOpen(false)}>
           <span className="brand-star">✦</span>
           <span>Disney Adventure</span>
           <small>FAMILY VOYAGE 2026</small>
         </a>
-        <nav aria-label="주요 섹션">
+        <button
+          className="mobile-nav-toggle"
+          type="button"
+          aria-label={mobileNavOpen ? "메뉴 닫기" : "메뉴 열기"}
+          aria-expanded={mobileNavOpen}
+          aria-controls="primary-navigation"
+          onClick={() => setMobileNavOpen((open) => !open)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+        <nav id="primary-navigation" className={mobileNavOpen ? "open" : ""} aria-label="주요 섹션" onClick={() => setMobileNavOpen(false)}>
           <a href="#voyage">항해 일정</a>
           <a href="#flights">항공</a>
           <a href="#hotels">호텔</a>
@@ -506,6 +519,7 @@ export default function DisneyCruisePage() {
           <a href="#restaurants">Restaurant</a>
           <a href="#pixie-dust">Pixie Dust</a>
           <a href="#checklist">체크리스트</a>
+          <a className="mobile-doc-link" href="#documents">예약 문서</a>
         </nav>
         <a className="nav-cta" href="#documents">예약 문서</a>
       </header>
