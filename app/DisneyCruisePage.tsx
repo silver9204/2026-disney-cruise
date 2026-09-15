@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { flightPayments, airfareTotal, seatTotal, flightPaidTotal, won } from "./flightPayments";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const assetPath = (path: string) => `${publicBasePath}${path}`;
@@ -437,7 +438,7 @@ function routeSegment(from: { lat: number; lng: number }, to: { lat: number; lng
 }
 
 const initialChecklist = [
-  { id: "flight", label: "대한항공 왕복 항공권 확정", meta: "추천: 12/29 출국 · 1/4 KE644 귀국" },
+  { id: "flight", label: "대한항공 왕복 항공권 발권 완료", meta: "9/13 결제 · 12/30 KE643 출국 · 1/4 KE644 출발, 1/5 귀국" },
   { id: "passport", label: "여권 유효기간 확인", meta: "4권 모두 확인 완료 · 갱신 불필요" },
   { id: "passport-copy", label: "여권 사본 제출", meta: "출발 1개월 전까지 여행사 전달" },
   { id: "balance", label: "크루즈 잔금 결제", meta: "2026.09.11 · US$2,289.40" },
@@ -458,7 +459,7 @@ export default function DisneyCruisePage() {
   const [activeHotelSlides, setActiveHotelSlides] = useState<Record<string, number>>({});
   const [activeOnboard, setActiveOnboard] = useState<Record<string, number>>({ activities: 0, attractions: 0, restaurants: 0 });
   const [activeOnboardSlides, setActiveOnboardSlides] = useState<Record<string, number>>({});
-  const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const [checked, setChecked] = useState<Record<string, boolean>>({ flight: true });
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const days = useMemo(() => formatCountdown(), []);
 
@@ -467,7 +468,7 @@ export default function DisneyCruisePage() {
       const saved = window.localStorage.getItem("disney-cruise-checklist");
       if (saved) {
         const parsed = JSON.parse(saved) as Record<string, boolean>;
-        const timer = window.setTimeout(() => setChecked(parsed), 0);
+        const timer = window.setTimeout(() => setChecked({ ...parsed, flight: true }), 0);
         return () => window.clearTimeout(timer);
       }
     } catch {
@@ -512,6 +513,7 @@ export default function DisneyCruisePage() {
         <nav id="primary-navigation" className={mobileNavOpen ? "open" : ""} aria-label="주요 섹션" onClick={() => setMobileNavOpen(false)}>
           <a href="#voyage">항해 일정</a>
           <a href="#flights">항공</a>
+          <a href="#expenses">지출</a>
           <a href="#hotels">호텔</a>
           <a href="#stateroom">객실</a>
           <a href="#activities">Activity</a>
@@ -555,7 +557,7 @@ export default function DisneyCruisePage() {
         <div className="section-heading centered">
           <span className="kicker">YOUR VOYAGE</span>
           <h2>다섯 번의 아침, <em>한 번의 특별한 새해</em></h2>
-          <p>기항지 없이 온전히 선상에서 즐기는 일정입니다. 첫날 승선 시간을 기준으로 싱가포르 전박을 여유 있게 잡는 것이 핵심입니다.</p>
+          <p>12월 30일 저녁 싱가포르 도착 후 1박, 31일부터 4박의 항해를 즐깁니다. 1월 4일 하선 후 야간 항공편으로 출발해 5일 아침 인천에 도착합니다.</p>
         </div>
         <div className="itinerary-line">
           {itinerary.map((item, index) => (
@@ -569,37 +571,65 @@ export default function DisneyCruisePage() {
           ))}
         </div>
         <div className="info-ribbon">
-          <strong>추천 여행 프레임</strong>
-          <span><b>12/29</b> 인천 출발</span><span className="arrow">→</span>
-          <span><b>12/30</b> 싱가포르 도착·전박</span><span className="arrow">→</span>
+          <strong>발권 완료 일정 · 현지 시각</strong>
+          <span><b>12/30 14:35 → 20:25</b> 인천 → 싱가포르 · 전박</span><span className="arrow">→</span>
           <span><b>12/31</b> 승선</span><span className="arrow">→</span>
-          <span><b>1/4</b> 하선·야간 귀국</span>
+          <span><b>1/4 22:30</b> 싱가포르 출발</span><span className="arrow">→</span>
+          <span><b>1/5 05:45</b> 인천 도착</span>
         </div>
       </section>
 
       <section className="section flights-section" id="flights">
         <div className="section-heading">
-          <span className="kicker light">FLIGHT PLAN</span>
-          <h2>대한항공으로, <em>안전 여유 우선</em></h2>
-          <p>귀국일은 1월 4일 고정. 입항 지연과 하선 시간을 고려하면 22:30편이 가장 안정적인 선택입니다.</p>
+          <span className="kicker light">CONFIRMED FLIGHTS</span>
+          <h2>대한항공, <em>왕복 발권 완료</em></h2>
+          <p>2026년 9월 13일 발행 e-ticket 기준 · 성인 2명 + 어린이 2명 · 전 구간 일반석 스탠다드. 모든 시각은 각 공항 현지 시각입니다.</p>
         </div>
         <div className="flight-grid">
           <article className="flight-card recommended">
-            <div className="card-flag">RECOMMENDED</div>
-            <div className="flight-title"><span className="airline-mark">KE</span><div><small>대한항공 · 이코노미</small><h3>안전한 왕복 조합</h3></div></div>
-            <div className="route-row"><div><small>DEC 29</small><strong>ICN</strong><span>서울</span></div><div className="route-line"><span>출국</span><i /></div><div><small>DEC 30</small><strong>SIN</strong><span>싱가포르</span></div></div>
-            <div className="route-row"><div><small>JAN 04 · 22:30</small><strong>SIN</strong><span>싱가포르</span></div><div className="route-line"><span>KE644</span><i /></div><div><small>JAN 05 · 05:45</small><strong>ICN</strong><span>서울</span></div></div>
-            <div className="fare"><div><span>4인 총액</span><strong>₩4,210,600</strong></div><small>2026.08.09 조회 · 운임 변동 가능</small></div>
+            <div className="card-flag">TICKETED · 4 GUESTS</div>
+            <div className="flight-title"><span className="airline-mark">KE</span><div><small>대한항공 · 일반석 스탠다드</small><h3>우리 가족의 왕복 일정</h3></div></div>
+            <div className="route-row"><div><small>DEC 30 · 14:35</small><strong>ICN</strong><span>인천 T2</span></div><div className="route-line"><span>KE643 · 6시간 50분</span><i /></div><div><small>DEC 30 · 20:25</small><strong>SIN</strong><span>창이 T4</span></div></div>
+            <div className="route-row"><div><small>JAN 04 · 22:30</small><strong>SIN</strong><span>창이 T4</span></div><div className="route-line"><span>KE644 · 6시간 15분</span><i /></div><div><small>JAN 05 · 05:45</small><strong>ICN</strong><span>인천 T2 · 다음 날</span></div></div>
+            <div className="fare"><div><span>왕복 항공권 4인 결제액</span><strong>{won(airfareTotal)}</strong></div><small>2026.09.13 결제 완료 · 유료좌석 별도</small></div>
           </article>
 
           <article className="flight-card prestige">
-            <div className="flight-title"><span className="airline-mark gold">P</span><div><small>대한항공 · 프레스티지</small><h3>편안함을 최우선으로</h3></div></div>
-            <div className="prestige-copy"><strong>장거리 귀국에서 확실한 휴식</strong><p>현재 KE644는 777 기재의 개별 스위트형 좌석으로 표시됩니다. 단, 실제 기재는 운항 사정에 따라 변경될 수 있습니다.</p></div>
-            <div className="compare-table"><div><span>4인 총액</span><strong>₩9,553,800</strong></div><div><span>이코노미 대비</span><strong>+₩5,343,200</strong></div><div><span>1인 추가</span><strong>약 +₩1,335,800</strong></div></div>
-            <div className="verdict"><span>판단</span><p>전 구간 프레스티지는 가격 차이가 큽니다. 별도 편도 발권도 불리해, 우선 이코노미 왕복을 확보한 뒤 업그레이드 옵션을 확인하는 편이 합리적입니다.</p></div>
+            <div className="flight-title"><span className="airline-mark gold">4</span><div><small>Boeing 777-300ER · 왕복 동일 기종</small><h3>좌석과 수하물</h3></div></div>
+            <div className="compare-table"><div><span>출국 KE643</span><strong>47D · 47E · 47F · 47G</strong></div><div><span>귀국 KE644</span><strong>30D · 30E · 30F · 30G</strong></div><div><span>위탁수하물</span><strong>각 구간 1인 1개</strong></div><div><span>귀국편 유료좌석 4명</span><strong>{won(seatTotal)}</strong></div></div>
+            <div className="verdict"><span>확인</span><p>귀국편 좌석 지정료는 1인 40,400원으로 별도 결제했습니다. 항공편·기종·좌석은 출발 전 다시 확인하세요.</p></div>
+            <a className="flight-source-link" href="#flight-documents">4명분 e-ticket·영수증 보기 ↗</a>
           </article>
         </div>
-        <div className="risk-note"><strong>피해야 할 귀국편</strong><span><b>01:35</b> 배 입항 전 출발이라 불가능</span><span><b>10:40</b> 입항·하선·이동 지연 위험이 커 비추천</span></div>
+        <div className="risk-note"><strong>승선 전날 도착</strong><span>12/30 밤 숙박 상태 확인 필요 · 12/31 낮 승선 목표</span><span>항구 도착 시각은 온라인 체크인에서 배정받은 PAT에 맞춥니다.</span></div>
+      </section>
+
+      <section className="section expense-section" id="expenses">
+        <div className="section-heading">
+          <span className="kicker">TRAVEL SPENDING</span>
+          <h2>돈 쓴 내역, <em>결제 완료 기준</em></h2>
+          <p>영수증으로 확인된 지출을 모았습니다. 항공권 확인증과 결제 영수증은 같은 구매이므로 한 번만 계산합니다.</p>
+        </div>
+        <div className="expense-summary">
+          <article><span>항공권 · 성인 2 + 어린이 2</span><strong>{won(airfareTotal)}</strong><small>운임·유류할증료·세금 포함</small></article>
+          <article><span>귀국편 유료좌석 · 4명</span><strong>{won(seatTotal)}</strong><small>40,400원 × 4 · EMD 영수증</small></article>
+          <article className="expense-total"><span>항공 관련 결제 합계</span><strong>{won(flightPaidTotal)}</strong><small>2026.09.13 결제 완료</small></article>
+        </div>
+        <div className="expense-table-wrap">
+          <table className="expense-table">
+            <caption>2026년 9월 13일 항공 결제 상세 · 원화</caption>
+            <thead><tr><th scope="col">구분</th><th scope="col">왕복 항공권</th><th scope="col">귀국 좌석</th><th scope="col">합계</th><th scope="col">증빙</th></tr></thead>
+            <tbody>{flightPayments.map((item) => (
+              <tr key={item.label}><th scope="row">{item.label}</th><td>{won(item.airfare)}</td><td>{won(item.seatFee)}</td><td>{won(item.airfare + item.seatFee)}</td><td><a href={item.receiptUrl} target="_blank" rel="noreferrer">항공권 ↗</a><a href={item.seatReceiptUrl} target="_blank" rel="noreferrer">좌석 ↗</a></td></tr>
+            ))}</tbody>
+            <tfoot><tr><th scope="row">4인 합계</th><td>{won(airfareTotal)}</td><td>{won(seatTotal)}</td><td>{won(flightPaidTotal)}</td><td>결제 완료</td></tr></tfoot>
+          </table>
+        </div>
+        <div className="expense-cruise">
+          <div><span>기존 크루즈 예약금 · 2025.09.30</span><strong>US$458.40</strong><small>결제 완료 · 원화 청구액 미확인으로 별도 집계</small></div>
+          <a href="https://drive.google.com/file/d/1goX9JX_IpCYc811HgUmRSHIWOGZDrUZ_/view" target="_blank" rel="noreferrer">크루즈 결제내역서 ↗</a>
+        </div>
+        <p className="expense-footnote">확인된 누적 지출: {won(flightPaidTotal)} + US$458.40. 크루즈 잔금 US$2,289.40은 기존 문서에 납부 예정으로만 표시되어 있어 합계에 넣지 않았습니다. 호텔·교통편도 결제 확인 후 추가합니다.</p>
       </section>
 
       <section className="section hotel-section" id="hotels">
@@ -607,7 +637,7 @@ export default function DisneyCruisePage() {
           <div>
             <span className="kicker">1 NIGHT IN SINGAPORE</span>
             <h2>승선 전 하루, <em>동선으로 고르는 호텔</em></h2>
-            <p>12월 29일 출국·30일 새벽 도착을 기준으로, 가족 4인이 한 객실에 투숙 가능한 객실만 우선 비교했습니다.</p>
+            <p>확정 항공편은 12월 30일 20:25 도착입니다. 12/30 체크인 → 12/31 체크아웃 1박이 필요하며, Fairmont 기존 예약 유지·취소 여부는 재확인해야 합니다. 아래는 가족 4인 객실의 기존 비교 자료입니다.</p>
           </div>
           <div className="hotel-verdict"><span>BEST ROUTE</span><strong>The Westin Singapore</strong><small>Marina Bay CBD · 터미널 5–10분</small></div>
         </div>
@@ -743,13 +773,13 @@ export default function DisneyCruisePage() {
         <div className="route-panel">
           <div className="route-intro"><span>ONE SIMPLE ROUTE</span><h3>세 시내 구역 기준</h3><p>짐이 4인분인 만큼 공항과 승선일은 Grab 또는 택시가 가장 단순합니다.</p></div>
           <div className="route-flow">
-            <div className="route-stop"><i>✈</i><span><small>12/30 새벽</small><strong>Changi Airport</strong><em>입국·수하물 수령</em></span></div>
+            <div className="route-stop"><i>✈</i><span><small>12/30 20:25</small><strong>Changi Airport · T4</strong><em>입국·수하물 수령</em></span></div>
             <div className="route-leg"><b>20–30분</b><span>택시 · 약 S$25–40</span></div>
-            <div className="route-stop hotel"><i>⌂</i><span><small>12/30–31</small><strong>CBD · Civic · Orchard</strong><em>1박 · 도심 관광</em></span></div>
+            <div className="route-stop hotel"><i>⌂</i><span><small>12/30–31</small><strong>CBD · Civic · Orchard</strong><em>저녁 체크인 · 1박</em></span></div>
             <div className="route-leg"><b>5–20분</b><span>택시 · 약 S$10–25</span></div>
-            <div className="route-stop port"><i>⚓</i><span><small>12/31</small><strong>Marina Bay Cruise Centre</strong><em>권장 도착 12:00–13:00</em></span></div>
+            <div className="route-stop port"><i>⚓</i><span><small>12/31</small><strong>Marina Bay Cruise Centre</strong><em>12시 전후 목표 · 배정 PAT 우선</em></span></div>
           </div>
-          <div className="mini-plan"><span><b>12/30</b> 체크인 전 짐 보관 → Merlion Park → Gardens by the Bay</span><span><b>12/31</b> 조식 → 체크아웃 → Grab/택시로 터미널 이동</span></div>
+          <div className="mini-plan"><span><b>12/30</b> 20:25 도착 → 입국·수하물 수령 → 호텔 체크인·휴식</span><span><b>12/31</b> 조식 → 체크아웃 → 배정 PAT에 맞춰 터미널 이동</span></div>
         </div>
         <p className="price-disclaimer">2026.08.09 Hotels.com에서 2026.12.30–31, 객실 1개, 성인 2명과 어린이 2명 조건으로 확인한 1박 요금입니다. 모든 호텔은 객실료와 세금·수수료 포함 총액을 같은 형식으로 표시했습니다. 대표 사진은 검색된 객실 타입과 다를 수 있습니다. 실제 재고·침구·취소 조건·최종 결제가는 예약 링크에서 다시 확인하세요.</p>
       </section>
@@ -1063,6 +1093,13 @@ export default function DisneyCruisePage() {
           <a href="https://drive.google.com/file/d/1c7h2h_V8t7HAxwcCCbvaYh-JwqJdZUO-/view?usp=drivesdk" target="_blank" rel="noreferrer"><span>02</span><div><strong>예약확정서</strong><small>Drive 권한 필요 · PDF</small></div><b>↗</b></a>
           <a href="https://drive.google.com/file/d/1goX9JX_IpCYc811HgUmRSHIWOGZDrUZ_/view?usp=drivesdk" target="_blank" rel="noreferrer"><span>03</span><div><strong>결제내역서</strong><small>Drive 권한 필요 · PDF</small></div><b>↗</b></a>
           <a href="https://drive.google.com/file/d/10Rg6EBfm-r_vIl_XgEuotjHMpcW_AL0d/view?usp=drivesdk" target="_blank" rel="noreferrer"><span>04</span><div><strong>예약 시 유의사항</strong><small>Google Drive 원본 · PDF</small></div><b>↗</b></a>
+        </div>
+        <div className="flight-documents" id="flight-documents">
+          <h3>항공 원본 · 2026.09.13 발권</h3>
+          <p>e-ticket 4개 · 항공권 영수증 4개 · 귀국 유료좌석 EMD 영수증 4개</p>
+          <div className="flight-document-grid">{flightPayments.map((item) => (
+            <article key={item.label}><h4>{item.label}</h4><a href={item.ticketUrl} target="_blank" rel="noreferrer">e-ticket ↗</a><a href={item.receiptUrl} target="_blank" rel="noreferrer">항공권 영수증 ↗</a><a href={item.seatReceiptUrl} target="_blank" rel="noreferrer">유료좌석 영수증 ↗</a></article>
+          ))}</div>
         </div>
       </section>
 

@@ -1,5 +1,45 @@
 @import "tailwindcss";
 
+.flight-source-link { display: inline-block; margin-top: 18px; font-weight: 650; text-decoration: underline; text-underline-offset: 4px; }
+.expense-section { background: #fff; }
+.expense-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-bottom: 30px; }
+.expense-summary article { padding: 25px; border: 1px solid #dbe5ec; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.expense-summary span, .expense-cruise span { font-size: 16px; }
+.expense-summary strong { font-size: clamp(24px, 2.4vw, 34px); }
+.expense-summary small, .expense-cruise small { font-size: 14px; line-height: 1.6; }
+.expense-summary .expense-total { background: #061c3a; color: white; border-color: #061c3a; }
+.expense-total strong { color: #efb94f; }
+.expense-table-wrap { overflow-x: auto; max-width: 100%; border: 1px solid #dbe5ec; border-radius: 12px; }
+.expense-table { width: 100%; border-collapse: collapse; font-size: 16px; }
+.expense-table caption { text-align: left; padding: 18px; font-weight: 650; }
+.expense-table th, .expense-table td { padding: 16px 18px; text-align: right; border-top: 1px solid #e4ebef; white-space: nowrap; }
+.expense-table th:first-child { text-align: left; }
+.expense-table thead, .expense-table tfoot { background: #f0f5f8; }
+.expense-table a { display: inline-block; color: #045c9e; text-decoration: underline; text-underline-offset: 3px; }
+.expense-table a + a { margin-left: 14px; }
+.expense-cruise { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; background: #f0f5f8; padding: 24px; border-radius: 12px; margin-top: 24px; }
+.expense-cruise > div { display: flex; flex-direction: column; gap: 8px; }
+.expense-cruise strong { font-size: 26px; }
+.expense-cruise > a { color: #045c9e; text-decoration: underline; }
+.expense-footnote { font-size: 15px; line-height: 1.8; color: #667389; margin-top: 18px; }
+.flight-documents { margin-top: 40px; scroll-margin-top: 90px; }
+.flight-documents h3 { font-size: 24px; }
+.flight-documents > p { font-size: 16px; color: #b6cbdc; margin: 10px 0 20px; }
+.flight-document-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.flight-document-grid article { padding: 22px; border: 1px solid #355471; border-radius: 10px; }
+.flight-document-grid h4 { font-size: 18px; margin: 0 0 12px; }
+.flight-document-grid a { display: block; font-size: 16px; padding: 9px 0; color: #d6e9f2; text-decoration: underline; text-underline-offset: 4px; }
+@media (max-width: 760px) {
+  .expense-summary { grid-template-columns: 1fr; }
+  .flights-section .fare { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .expense-table caption::after { content: " · 좌우로 밀어 전체 보기"; display: block; font-size: 14px; font-weight: 400; color: #667389; margin-top: 8px; }
+  .expense-table th, .expense-table td { padding: 13px; font-size: 15px; }
+  .flight-document-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 420px) {
+  .flight-document-grid { grid-template-columns: 1fr; }
+}
+
 @font-face {
   font-family: "Pretendard";
   src: url("../public/fonts/PretendardVariable.woff2") format("woff2");
