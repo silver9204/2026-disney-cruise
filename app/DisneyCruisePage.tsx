@@ -2,6 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { flightPayments, airfareTotal, seatTotal, flightPaidTotal, won } from "./flightPayments";
+import { cruisePayments, cruisePaidCents, cruisePaymentStatementUrl, usd } from "./cruisePayments";
+import SwissotelStay from "./SwissotelStay";
+import DusitStay from "./DusitStay";
+import { hotelBooking } from "./hotelBooking";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const assetPath = (path: string) => `${publicBasePath}${path}`;
@@ -297,7 +301,7 @@ const onboardExplorers = [
     id: "activities",
     eyebrow: "01 · ACTIVITY",
     title: "공연·키즈 클럽·성인 웰니스",
-    intro: "가족 공연과 키즈 클럽뿐 아니라, 아이들이 클럽에 있는 동안 이용할 수 있는 성인 중심 웰니스도 함께 골랐습니다.",
+    intro: "공연 · 키즈 클럽 · 성인 웰니스 — 운영시간은 Navigator 앱에서 확인",
     source: "https://disneycruise.disney.go.com/en-eu/ships/adventure/entertainment/",
     sourceLabel: "공식 Entertainment 안내",
     tone: "activity",
@@ -333,7 +337,7 @@ const onboardExplorers = [
     id: "attractions",
     eyebrow: "02 · ATTRACTION",
     title: "상부 데크·테마 거리·성인 라운지",
-    intro: "가족용 어트랙션은 오전과 해질 무렵, 실내 거리와 성인 지향 라운지는 한낮이나 아이들의 클럽 시간에 배치합니다.",
+    intro: "어트랙션 · 수영장 · 라운지 — 이용 조건은 각 시설 안내 참고",
     source: "https://disneycruise.disney.go.com/en-ph/ships/adventure/themed-areas/",
     sourceLabel: "공식 Themed Areas 안내",
     tone: "attraction",
@@ -369,7 +373,7 @@ const onboardExplorers = [
     id: "restaurants",
     eyebrow: "03 · RESTAURANT",
     title: "로테이셔널 다이닝과 예약 식사",
-    intro: "저녁은 지정 로테이션을 기본으로 두고, 프리미엄 다이닝은 가족 일정과 겹치지 않게 한 번만 고릅니다.",
+    intro: "로테이셔널 다이닝 · 캐주얼 식당 · 별도 예약 레스토랑",
     source: "https://disneycruise.disney.go.com/en-sg/ships/adventure/dining/",
     sourceLabel: "공식 Dining 안내",
     tone: "restaurant",
@@ -441,8 +445,9 @@ const initialChecklist = [
   { id: "flight", label: "대한항공 왕복 항공권 발권 완료", meta: "9/13 결제 · 12/30 KE643 출국 · 1/4 KE644 출발, 1/5 귀국" },
   { id: "passport", label: "여권 유효기간 확인", meta: "4권 모두 확인 완료 · 갱신 불필요" },
   { id: "passport-copy", label: "여권 사본 제출", meta: "출발 1개월 전까지 여행사 전달" },
-  { id: "balance", label: "크루즈 잔금 결제", meta: "2026.09.11 · US$2,289.40" },
-  { id: "hotel", label: "싱가포르 전박 호텔 예약", meta: "12/30 체크인 · 12/31 체크아웃 · 1박" },
+  { id: "balance", label: "크루즈 잔금 결제 완료", meta: "2026.09.10 · US$2,289.40 납부 · 잔액 0" },
+  { id: "hotel", label: "두짓타니 1박 예약·결제 완료", meta: "12/30–31 · ₩393,021 · 환불 불가" },
+  { id: "hotel-details", label: "호텔 문의 답변 확인", meta: "9/18 전송 · 4인 조식 포함 여부 / 추가 침구 요금" },
   { id: "app", label: "Disney Cruise Line 앱 준비", meta: "온라인 체크인·활동 예약 일정 확인" },
   { id: "pixie-plan", label: "Pixie Dust 구성 확정", meta: "가볍고 식품이 아닌 선물 · 8개 내외" },
   { id: "pixie-pack", label: "Pixie Dust 개별 포장", meta: "스티커·팔찌·미니 퍼즐 중심" },
@@ -459,7 +464,7 @@ export default function DisneyCruisePage() {
   const [activeHotelSlides, setActiveHotelSlides] = useState<Record<string, number>>({});
   const [activeOnboard, setActiveOnboard] = useState<Record<string, number>>({ activities: 0, attractions: 0, restaurants: 0 });
   const [activeOnboardSlides, setActiveOnboardSlides] = useState<Record<string, number>>({});
-  const [checked, setChecked] = useState<Record<string, boolean>>({ flight: true });
+  const [checked, setChecked] = useState<Record<string, boolean>>({ flight: true, balance: true, hotel: true });
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const days = useMemo(() => formatCountdown(), []);
 
@@ -468,7 +473,7 @@ export default function DisneyCruisePage() {
       const saved = window.localStorage.getItem("disney-cruise-checklist");
       if (saved) {
         const parsed = JSON.parse(saved) as Record<string, boolean>;
-        const timer = window.setTimeout(() => setChecked({ ...parsed, flight: true }), 0);
+        const timer = window.setTimeout(() => setChecked({ ...parsed, flight: true, balance: true, hotel: true }), 0);
         return () => window.clearTimeout(timer);
       }
     } catch {
@@ -532,7 +537,7 @@ export default function DisneyCruisePage() {
         <div className="hero-content">
           <div className="eyebrow"><span>✦</span> 4-NIGHT MAGIC AT SEA</div>
           <h1>새해를 여는<br /><em>마법 같은 항해</em></h1>
-          <p className="hero-copy">싱가포르에서 출발하는 4박의 Disney Adventure.<br />우리 가족의 예약, 항공, 객실과 준비 일정을 한곳에 모았습니다.</p>
+          <p className="hero-copy">싱가포르 출발 · 4박의 Disney Adventure<br />2026.12.30 — 2027.01.05 · 가족 4명</p>
         </div>
         <div className="ship-frame">
           <img src={assetPath("/images/disney-adventure-ship.jpg")} alt="싱가포르에 입항한 Disney Adventure 크루즈선" />
@@ -557,7 +562,7 @@ export default function DisneyCruisePage() {
         <div className="section-heading centered">
           <span className="kicker">YOUR VOYAGE</span>
           <h2>다섯 번의 아침, <em>한 번의 특별한 새해</em></h2>
-          <p>12월 30일 저녁 싱가포르 도착 후 1박, 31일부터 4박의 항해를 즐깁니다. 1월 4일 하선 후 야간 항공편으로 출발해 5일 아침 인천에 도착합니다.</p>
+          <p>12/30 호텔 1박 → 12/31–1/4 크루즈 4박 → 1/5 인천 도착</p>
         </div>
         <div className="itinerary-line">
           {itinerary.map((item, index) => (
@@ -583,7 +588,7 @@ export default function DisneyCruisePage() {
         <div className="section-heading">
           <span className="kicker light">CONFIRMED FLIGHTS</span>
           <h2>대한항공, <em>왕복 발권 완료</em></h2>
-          <p>2026년 9월 13일 발행 e-ticket 기준 · 성인 2명 + 어린이 2명 · 전 구간 일반석 스탠다드. 모든 시각은 각 공항 현지 시각입니다.</p>
+          <p>성인 2명 + 어린이 2명 · 일반석 스탠다드 · 모든 시각은 현지 기준</p>
         </div>
         <div className="flight-grid">
           <article className="flight-card recommended">
@@ -597,18 +602,18 @@ export default function DisneyCruisePage() {
           <article className="flight-card prestige">
             <div className="flight-title"><span className="airline-mark gold">4</span><div><small>Boeing 777-300ER · 왕복 동일 기종</small><h3>좌석과 수하물</h3></div></div>
             <div className="compare-table"><div><span>출국 KE643</span><strong>47D · 47E · 47F · 47G</strong></div><div><span>귀국 KE644</span><strong>30D · 30E · 30F · 30G</strong></div><div><span>위탁수하물</span><strong>각 구간 1인 1개</strong></div><div><span>귀국편 유료좌석 4명</span><strong>{won(seatTotal)}</strong></div></div>
-            <div className="verdict"><span>확인</span><p>귀국편 좌석 지정료는 1인 40,400원으로 별도 결제했습니다. 항공편·기종·좌석은 출발 전 다시 확인하세요.</p></div>
+            <div className="verdict"><span>결제 완료</span><p>귀국편 좌석 지정료 · 1인 40,400원</p></div>
             <a className="flight-source-link" href="#flight-documents">4명분 e-ticket·영수증 보기 ↗</a>
           </article>
         </div>
-        <div className="risk-note"><strong>승선 전날 도착</strong><span>12/30 밤 숙박 상태 확인 필요 · 12/31 낮 승선 목표</span><span>항구 도착 시각은 온라인 체크인에서 배정받은 PAT에 맞춥니다.</span></div>
+        <div className="risk-note"><strong>승선 전날 도착</strong><span>12/30 두짓타니 1박 예약 완료</span><span>항구 도착은 배정 PAT 기준</span></div>
       </section>
 
       <section className="section expense-section" id="expenses">
         <div className="section-heading">
           <span className="kicker">TRAVEL SPENDING</span>
           <h2>돈 쓴 내역, <em>결제 완료 기준</em></h2>
-          <p>영수증으로 확인된 지출을 모았습니다. 항공권 확인증과 결제 영수증은 같은 구매이므로 한 번만 계산합니다.</p>
+          <p>결제 완료 금액 · 원화와 USD 별도 집계</p>
         </div>
         <div className="expense-summary">
           <article><span>항공권 · 성인 2 + 어린이 2</span><strong>{won(airfareTotal)}</strong><small>운임·유류할증료·세금 포함</small></article>
@@ -626,20 +631,34 @@ export default function DisneyCruisePage() {
           </table>
         </div>
         <div className="expense-cruise">
-          <div><span>기존 크루즈 예약금 · 2025.09.30</span><strong>US$458.40</strong><small>결제 완료 · 원화 청구액 미확인으로 별도 집계</small></div>
-          <a href="https://drive.google.com/file/d/1goX9JX_IpCYc811HgUmRSHIWOGZDrUZ_/view" target="_blank" rel="noreferrer">크루즈 결제내역서 ↗</a>
+          <div><span>크루즈 전액 결제 완료 · 2026.09.10</span><strong>{usd(cruisePaidCents)}</strong><small>예약금 + 잔금 · 남은 금액 0 · 원화 청구액 미확인</small></div>
+          <a href={cruisePaymentStatementUrl} target="_blank" rel="noreferrer">최종 결제내역서 ↗</a>
         </div>
-        <p className="expense-footnote">확인된 누적 지출: {won(flightPaidTotal)} + US$458.40. 크루즈 잔금 US$2,289.40은 기존 문서에 납부 예정으로만 표시되어 있어 합계에 넣지 않았습니다. 호텔·교통편도 결제 확인 후 추가합니다.</p>
+        <div className="expense-table-wrap">
+          <table className="expense-table">
+            <caption>크루즈 결제 상세 · USD · 2026.09.10 발행 내역서 기준</caption>
+            <thead><tr><th scope="col">결제일</th><th scope="col">명목</th><th scope="col">결제방식</th><th scope="col">결제액</th></tr></thead>
+            <tbody>{cruisePayments.map((item) => (
+              <tr key={item.label}><th scope="row">{item.date}</th><td>{item.label}</td><td>{item.method}</td><td>{usd(item.amountCents)}</td></tr>
+            ))}</tbody>
+            <tfoot><tr><th scope="row">총 납부액</th><td colSpan={2}>전액 결제 완료</td><td>{usd(cruisePaidCents)}</td></tr></tfoot>
+          </table>
+        </div>
+        <div className="expense-cruise">
+          <div><span>두짓타니 라구나 1박 · {hotelBooking.paidDate} 결제 완료</span><strong>{won(hotelBooking.paid)}</strong><small>객실료 {won(hotelBooking.roomCharge)} + 세금 {won(hotelBooking.tax)} · 환불 불가</small></div>
+          <a href={hotelBooking.confirmationUrl} target="_blank" rel="noreferrer">예약·결제 확인 메일 ↗</a>
+        </div>
+        <p className="expense-footnote">결제 합계: {won(flightPaidTotal + hotelBooking.paid)} + {usd(cruisePaidCents)} · 크루즈 원화 청구액 미확인 · 미결제 교통·추가금 제외</p>
       </section>
 
       <section className="section hotel-section" id="hotels">
         <div className="section-heading hotel-heading">
           <div>
             <span className="kicker">1 NIGHT IN SINGAPORE</span>
-            <h2>승선 전 하루, <em>동선으로 고르는 호텔</em></h2>
-            <p>확정 항공편은 12월 30일 20:25 도착입니다. 12/30 체크인 → 12/31 체크아웃 1박이 필요하며, Fairmont 기존 예약 유지·취소 여부는 재확인해야 합니다. 아래는 가족 4인 객실의 기존 비교 자료입니다.</p>
+            <h2>승선 전 하루, <em>두짓타니 예약 완료</em></h2>
+            <p>12/30–31 · 공항 인근 라구나 · 조식 포함</p>
           </div>
-          <div className="hotel-verdict"><span>BEST ROUTE</span><strong>The Westin Singapore</strong><small>Marina Bay CBD · 터미널 5–10분</small></div>
+          <div className="hotel-verdict"><span>BOOKED &amp; PAID</span><strong>Dusit Thani Laguna</strong><small>총 ₩393,021 결제 완료 · 환불 불가</small></div>
         </div>
 
         <div className="legacy-hotels" aria-hidden="true">
@@ -707,6 +726,15 @@ export default function DisneyCruisePage() {
         </div>
         </div>
 
+        <DusitStay />
+        <details className="hotel-research-archive">
+          <summary>이전 비교 자료 · 스위소텔</summary>
+          <SwissotelStay />
+        </details>
+
+        <details className="hotel-research-archive">
+          <summary>이전 비교 자료 · 호텔 목록과 구역 지도</summary>
+          <p className="swissotel-note">2026.08.09 조사 자료를 보관한 목록입니다. 아래 요금은 현재 견적이 아니며, 오차드 등 현재 검토 범위 밖 호텔도 포함합니다.</p>
         <div className="hotel-zone-groups">
           {hotelGroups.map((group, groupIndex) => (
             <section className="hotel-zone-group" key={group.id} id={`hotels-${group.id}`}>
@@ -770,18 +798,19 @@ export default function DisneyCruisePage() {
           </div>
         </div>
 
+        </details>
+
         <div className="route-panel">
-          <div className="route-intro"><span>ONE SIMPLE ROUTE</span><h3>세 시내 구역 기준</h3><p>짐이 4인분인 만큼 공항과 승선일은 Grab 또는 택시가 가장 단순합니다.</p></div>
+          <div className="route-intro"><span>TRANSFER PLAN</span><h3>T4 → 두짓타니 → 항구</h3><p>택시 이동 예정 · 차량 미예약</p></div>
           <div className="route-flow">
             <div className="route-stop"><i>✈</i><span><small>12/30 20:25</small><strong>Changi Airport · T4</strong><em>입국·수하물 수령</em></span></div>
-            <div className="route-leg"><b>20–30분</b><span>택시 · 약 S$25–40</span></div>
-            <div className="route-stop hotel"><i>⌂</i><span><small>12/30–31</small><strong>CBD · Civic · Orchard</strong><em>저녁 체크인 · 1박</em></span></div>
-            <div className="route-leg"><b>5–20분</b><span>택시 · 약 S$10–25</span></div>
-            <div className="route-stop port"><i>⚓</i><span><small>12/31</small><strong>Marina Bay Cruise Centre</strong><em>12시 전후 목표 · 배정 PAT 우선</em></span></div>
+            <div className="route-leg"><b>약 10–20분</b><span>택시 · 호출 견적 확인</span></div>
+            <div className="route-stop hotel"><i>⌂</i><span><small>12/30–31</small><strong>Dusit Thani Laguna</strong><em>늦은 저녁 체크인 · 1박 확정</em></span></div>
+            <div className="route-leg"><b>약 25–35분</b><span>계획용 추정 · 배차 별도</span></div>
+            <div className="route-stop port"><i>⚓</i><span><small>12/31</small><strong>Marina Bay Cruise Centre</strong><em>배정 PAT에 맞춰 도착</em></span></div>
           </div>
-          <div className="mini-plan"><span><b>12/30</b> 20:25 도착 → 입국·수하물 수령 → 호텔 체크인·휴식</span><span><b>12/31</b> 조식 → 체크아웃 → 배정 PAT에 맞춰 터미널 이동</span></div>
         </div>
-        <p className="price-disclaimer">2026.08.09 Hotels.com에서 2026.12.30–31, 객실 1개, 성인 2명과 어린이 2명 조건으로 확인한 1박 요금입니다. 모든 호텔은 객실료와 세금·수수료 포함 총액을 같은 형식으로 표시했습니다. 대표 사진은 검색된 객실 타입과 다를 수 있습니다. 실제 재고·침구·취소 조건·최종 결제가는 예약 링크에서 다시 확인하세요.</p>
+        <p className="price-disclaimer">차량 이동시간은 예상치 · 배차 대기·짐 싣는 시간 별도</p>
       </section>
 
       <section className="section room-section" id="stateroom">
@@ -812,7 +841,7 @@ export default function DisneyCruisePage() {
           <div className="deck-copy">
             <span className="kicker">DECK LOCATION</span>
             <h3>Deck 15 · 우현</h3>
-            <p>15150호는 우현 선수 쪽 객실입니다. 도면에서 선수부 첫 번째 엘리베이터 홀보다 앞쪽에 있어, 방 번호가 적힌 위치를 바로 확인할 수 있습니다.</p>
+            <p>Deck 15 · 우현 선수 · 전방 엘리베이터 홀 앞쪽</p>
             <ul>
               <li><b>위치</b> Deck 15 · 우현 · 선수 쪽</li>
               <li><b>동선</b> 선수부 엘리베이터 홀과 가까운 편</li>
@@ -841,7 +870,7 @@ export default function DisneyCruisePage() {
                   <div className="profile-marker"><i /><span>15150<br /><small>FORWARD · STARBOARD</small></span></div>
                   <span className="profile-bow">BOW · 선수 →</span>
                 </div>
-                <figcaption>측면 렌더링은 층수와 선수·선미 방향을 이해하기 위한 참고도입니다. 우현 객실은 보이는 면의 반대편일 수 있습니다. <a href="https://www.thestreet.com/travel/disney-removes-popular-character-from-cruise-ships" target="_blank" rel="noreferrer">Image: Walt Disney ↗</a></figcaption>
+                <figcaption>층수·방향 참고도 · 우현 객실은 반대편일 수 있음. <a href="https://www.thestreet.com/travel/disney-removes-popular-character-from-cruise-ships" target="_blank" rel="noreferrer">Image: Walt Disney ↗</a></figcaption>
               </figure>
               <div className="venue-map">
                 <div className="venue-map-heading"><span>03 · AROUND THE SHIP</span><strong>15150호에서 주요 시설까지</strong><small>FWD 선수 · MID 중앙 · AFT 선미</small></div>
@@ -959,6 +988,8 @@ export default function DisneyCruisePage() {
       })}
 
       <section className="section onboard-plan-section">
+        <details className="hotel-research-archive">
+          <summary>선내 일정 아이디어 · 미확정</summary>
         <div className="four-night-plan">
           <div className="plan-intro"><span>4-NIGHT PRIORITY</span><strong>밤 공연을 축으로 낮 동선을 배치</strong><small>정확한 시간과 운영 여부는 승선 후 Disney Cruise Line 앱 기준</small></div>
           <div><b>NIGHT 1</b><strong>Disney Seas</strong><span>첫 로테이셔널 디너</span></div>
@@ -966,6 +997,7 @@ export default function DisneyCruisePage() {
           <div><b>DAY 3</b><strong>Toy Story · Wayfinder</strong><span>Moana 공연</span></div>
           <div><b>DAY 4</b><strong>키즈 클럽 · 재탑승</strong><span>예약 시 프리미엄 다이닝</span></div>
         </div>
+        </details>
       </section>
 
       <section className="legacy-magic" id="onboard-magic" aria-hidden="true">
@@ -1048,16 +1080,15 @@ export default function DisneyCruisePage() {
           <div className="section-heading">
             <span className="kicker light">PIXIE DUST ONLY</span>
             <h2>작은 선물로 남기는 <em>한 번의 마법</em></h2>
-            <p>문 장식이나 Fish Extender 교환은 제외하고, 신청 없이 가볍게 나눌 수 있는 Pixie Dust만 준비합니다.</p>
+            <p>Pixie Dust만 준비 · 문 장식·Fish Extender 제외</p>
           </div>
-          <div className="pixie-verdict"><span>OUR PLAN</span><strong>8개 내외 · 식품 제외</strong><small>가볍고 납작한 소품 중심</small></div>
+          <div className="pixie-verdict"><span>준비안</span><strong>8개 내외 · 식품 제외</strong><small>가볍고 납작한 소품 중심</small></div>
         </div>
         <div className="pixie-card">
           <figure><img src={assetPath("/images/pixie-dust-bags.jpg")} alt="스티커와 팔찌로 구성한 Disney Cruise Pixie Dust 선물 봉투" /><figcaption>PHOTO IDEA · PIXIE DUST GIFT BAGS</figcaption></figure>
           <div className="pixie-copy">
             <span className="kicker">WHAT TO PACK</span>
             <h3>8개의 작은 봉투, 부담 없는 구성</h3>
-            <p>받는 사람의 나이·알레르기를 몰라도 무난하도록 먹을 것은 빼고, 여행 중 바로 쓸 수 있는 소품으로만 구성합니다.</p>
             <div className="pixie-ideas"><span>캐릭터 스티커</span><span>야광 팔찌</span><span>임시 타투</span><span>미니 노트</span><span>작은 퍼즐</span><span>가벼운 키링</span></div>
             <div className="pixie-steps"><div><b>01</b><span><strong>한 봉투당 2–3개</strong><small>부피와 수하물 무게 최소화</small></span></div><div><b>02</b><span><strong>개별 포장</strong><small>“Happy Sailing” 태그만 간단히</small></span></div><div><b>03</b><span><strong>승선 후 전달</strong><small>통행을 막지 않도록 짧게 전달</small></span></div></div>
             <div className="pixie-note"><strong>피할 것</strong><span>식품 · 액체 · 슬라임 · 깨지는 장난감 · 개인정보가 적힌 태그</span></div>
@@ -1086,12 +1117,12 @@ export default function DisneyCruisePage() {
         <div className="section-heading centered">
           <span className="kicker light">TRAVEL DOCUMENTS</span>
           <h2>예약 원본 문서</h2>
-          <p>원본은 Google Drive에서 열리며, Drive 접근 권한이 있는 Google 계정으로 로그인해야 합니다.</p>
+          <p>Google Drive 원본 · 접근 권한이 있는 계정으로 로그인</p>
         </div>
         <div className="docs-grid">
           <a href="https://drive.google.com/file/d/1W3zyVJJR4oJlTYhfrhClcxx-BEJmN2om/view?usp=drivesdk" target="_blank" rel="noreferrer"><span>01</span><div><strong>크루즈 일정표</strong><small>Google Drive 원본 · PDF</small></div><b>↗</b></a>
           <a href="https://drive.google.com/file/d/1c7h2h_V8t7HAxwcCCbvaYh-JwqJdZUO-/view?usp=drivesdk" target="_blank" rel="noreferrer"><span>02</span><div><strong>예약확정서</strong><small>Drive 권한 필요 · PDF</small></div><b>↗</b></a>
-          <a href="https://drive.google.com/file/d/1goX9JX_IpCYc811HgUmRSHIWOGZDrUZ_/view?usp=drivesdk" target="_blank" rel="noreferrer"><span>03</span><div><strong>결제내역서</strong><small>Drive 권한 필요 · PDF</small></div><b>↗</b></a>
+          <a href={cruisePaymentStatementUrl} target="_blank" rel="noreferrer"><span>03</span><div><strong>최종 결제내역서 · 완납</strong><small>2026.09.10 발행 · Drive 권한 필요 · PDF</small></div><b>↗</b></a>
           <a href="https://drive.google.com/file/d/10Rg6EBfm-r_vIl_XgEuotjHMpcW_AL0d/view?usp=drivesdk" target="_blank" rel="noreferrer"><span>04</span><div><strong>예약 시 유의사항</strong><small>Google Drive 원본 · PDF</small></div><b>↗</b></a>
         </div>
         <div className="flight-documents" id="flight-documents">

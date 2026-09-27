@@ -21,6 +21,7 @@
 .expense-cruise > div { display: flex; flex-direction: column; gap: 8px; }
 .expense-cruise strong { font-size: 26px; }
 .expense-cruise > a { color: #045c9e; text-decoration: underline; }
+.expense-cruise + .expense-table-wrap { margin-top: 18px; }
 .expense-footnote { font-size: 15px; line-height: 1.8; color: #667389; margin-top: 18px; }
 .flight-documents { margin-top: 40px; scroll-margin-top: 90px; }
 .flight-documents h3 { font-size: 24px; }
@@ -324,6 +325,34 @@ em { color: var(--ocean); font-family: var(--font-display), Georgia, serif; font
 .value-hotel-card .hotel-actions a { font-size: 9px; }
 
 .legacy-hotels { display: none; }
+.swissotel-plan { display: grid; gap: 24px; font-size: 1rem; line-height: 1.75; }
+.swissotel-stay, .swissotel-transfer-grid > article { min-width: 0; padding: clamp(20px, 3vw, 36px); background: white; border: 1px solid #dce6e4; border-radius: 12px; }
+.swissotel-stay { border-top: 4px solid var(--gold); }
+.swissotel-stay-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+.swissotel-plan h3 { margin: 8px 0 12px; font-size: clamp(22px, 2.3vw, 30px); line-height: 1.3; overflow-wrap: anywhere; }
+.swissotel-plan p { margin: 12px 0; }
+.swissotel-plan .kicker { font-size: .875rem; }
+.swissotel-budget { padding: 8px 14px; border-radius: 20px; background: #e7f3f1; color: #17636a; font-size: .875rem; font-weight: 750; }
+.swissotel-rate-grid, .swissotel-transfer-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.swissotel-rate-grid { margin: 24px 0; }
+.swissotel-rate-grid > div { display: flex; flex-direction: column; padding: 22px; border-radius: 8px; background: #eef5f4; }
+.swissotel-rate-grid .recommended { background: var(--navy); color: white; }
+.swissotel-rate-grid strong { margin: 6px 0; font-size: clamp(26px, 3vw, 36px); }
+.swissotel-rate-grid .recommended strong { color: var(--gold); }
+.swissotel-rate-grid small, .swissotel-rate-grid span { font-size: .875rem; }
+.swissotel-plan ul, .swissotel-plan ol { padding-left: 22px; }
+.swissotel-plan li { margin: 12px 0; overflow-wrap: anywhere; }
+.swissotel-note { color: #586c76; font-size: .875rem; line-height: 1.7; }
+.swissotel-callout { margin: 22px 0; padding: 18px; border-left: 3px solid var(--gold); background: #f0f5f5; }
+.swissotel-links { display: flex; flex-wrap: wrap; gap: 12px 22px; }
+.swissotel-links a { color: #16627f; text-decoration: underline; text-underline-offset: 4px; font-size: .875rem; overflow-wrap: anywhere; }
+.hotel-research-archive { margin-top: 28px; padding: 20px; border: 1px solid #ccd9db; border-radius: 8px; }
+.hotel-research-archive > summary { cursor: pointer; font-size: 1rem; font-weight: 750; line-height: 1.6; }
+.hotel-research-archive[open] > summary { margin-bottom: 22px; }
+@media (max-width: 760px) {
+  .swissotel-rate-grid, .swissotel-transfer-grid { grid-template-columns: minmax(0, 1fr); }
+  .hotel-research-archive { padding: 14px; }
+}
 .hotel-zone-groups { display: grid; gap: 62px; }
 .hotel-zone-group { scroll-margin-top: 96px; }
 .hotel-zone-heading { margin-bottom: 19px; display: grid; grid-template-columns: 50px minmax(0, 1fr) auto; gap: 16px; align-items: center; }
