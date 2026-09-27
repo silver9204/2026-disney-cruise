@@ -448,7 +448,9 @@ const initialChecklist = [
   { id: "balance", label: "크루즈 잔금 결제 완료", meta: "2026.09.10 · US$2,289.40 납부 · 잔액 0" },
   { id: "hotel", label: "두짓타니 1박 예약·결제 완료", meta: "12/30–31 · ₩393,021 · 환불 불가" },
   { id: "hotel-details", label: "호텔 답변의 아동 나이·조식 요금 재확인", meta: "10세·8세 전달 완료 · 호텔 답변의 ‘2세’ 표기와 불일치" },
-  { id: "app", label: "Disney Cruise Line 앱 준비", meta: "온라인 체크인·활동 예약 일정 확인" },
+  { id: "app", label: "Disney Cruise Line 앱·로그인 확인", meta: "12/1 체크인 창을 놓치지 않도록 My Reservations 접근 확인" },
+  { id: "checkin-start", label: "온라인 체크인 시작일에 접속", meta: "신규 승객 기준 12/1 14:01 KST · Castaway Club은 더 빠를 수 있음" },
+  { id: "pat-form", label: "PAT 선택·Port Arrival Form 저장", meta: "체크인 후 QR Form을 앱·이메일·휴대폰에 저장" },
   { id: "pixie-plan", label: "Pixie Dust 구성 확정", meta: "가볍고 식품이 아닌 선물 · 8개 내외" },
   { id: "pixie-pack", label: "Pixie Dust 개별 포장", meta: "스티커·팔찌·미니 퍼즐 중심" },
 ];
@@ -518,6 +520,7 @@ export default function DisneyCruisePage() {
         <nav id="primary-navigation" className={mobileNavOpen ? "open" : ""} aria-label="주요 섹션" onClick={() => setMobileNavOpen(false)}>
           <a href="#voyage">항해 일정</a>
           <a href="#flights">항공</a>
+          <a href="#check-in">온라인 체크인</a>
           <a href="#expenses">여행 경비</a>
           <a href="#hotels">호텔</a>
           <a href="#stateroom">객실</a>
@@ -607,6 +610,50 @@ export default function DisneyCruisePage() {
           </article>
         </div>
         <div className="risk-note"><strong>승선 전날 도착</strong><span>12/30 두짓타니 1박 예약 완료</span><span>항구 도착은 배정 PAT 기준</span></div>
+      </section>
+
+      <section className="section checkin-section" id="check-in">
+        <div className="section-heading">
+          <span className="kicker">NEXT ACTIONS · ONLINE CHECK-IN</span>
+          <h2>PAT는 <em>체크인에서 선택</em></h2>
+          <p>현재 예약 문서에는 PAT가 없습니다. 온라인 체크인 창이 열리면 아래 순서대로 진행하세요.</p>
+        </div>
+        <div className="checkin-status"><span>현재 상태</span><strong>PAT 미확정</strong><small>12/31 16:00은 출항 시각이며, 터미널 도착 시각이 아닙니다.</small></div>
+        <div className="checkin-grid">
+          <article className="checkin-card featured">
+            <span className="checkin-number">01</span>
+            <small className="checkin-when">2026.12.01 · 14:01 KST</small>
+            <h3>온라인 체크인 시작</h3>
+            <p>신규 승객 기준 출항 30일 전입니다. Disney Cruise Line 앱 또는 웹사이트의 <b>My Reservations → Begin Check-In</b>에 로그인합니다.</p>
+            <strong className="checkin-action">할 일 · 12/1 전에 앱 설치·로그인 확인</strong>
+          </article>
+          <article className="checkin-card">
+            <span className="checkin-number">02</span>
+            <small className="checkin-when">체크인 입력 항목</small>
+            <h3>여권·사진 정보 입력</h3>
+            <p>가족 4명의 여권 원본, 얼굴 사진, 연락처와 항공편 정보를 준비해 온라인 체크인에 입력합니다.</p>
+            <strong className="checkin-action">할 일 · 원본과 입력 내용을 대조</strong>
+          </article>
+          <article className="checkin-card">
+            <span className="checkin-number">03</span>
+            <small className="checkin-when">가능한 시간 중 선택</small>
+            <h3>PAT 선택</h3>
+            <p>표시되는 Port Arrival Time 중 하나를 선택합니다. 12시 도착은 현재 목표일 뿐, 실제 항구 도착은 확정된 PAT에 맞춥니다.</p>
+            <strong className="checkin-action">할 일 · PAT 확정 후 차량 픽업 시각 결정</strong>
+          </article>
+          <article className="checkin-card">
+            <span className="checkin-number">04</span>
+            <small className="checkin-when">선택 직후 저장</small>
+            <h3>Port Arrival Form 보관</h3>
+            <p>PAT가 표시된 QR Form을 앱과 이메일에서 확인하고 휴대폰에 저장합니다. 승선 당일 터미널에서 제시합니다.</p>
+            <strong className="checkin-action">할 일 · 오프라인 저장 + 가족 휴대폰에도 공유</strong>
+          </article>
+        </div>
+        <div className="checkin-followup">
+          <div><span>그 다음</span><strong>호텔 → Marina Bay Cruise Centre 이동 예약</strong><small>두짓타니 체크아웃 후 Grab 또는 콜밴을 PAT 기준으로 예약하고, 교통 여유를 둡니다.</small></div>
+          <div><span>주의</span><strong>PAT 이전에는 터미널 입장 불가</strong><small>너무 일찍 도착하면 대기할 수 있으므로, 실제 도착 시각은 PAT에 맞춥니다.</small></div>
+        </div>
+        <div className="checkin-sources"><span>공식 안내</span><a href="https://disneycruise.disney.go.com/en-as/why-cruise-disney/know-before-you-go/kbyg-olci-open/" target="_blank" rel="noreferrer">Online Check-In ↗</a><a href="https://disneycruise.disney.go.com/en-au/ships/adventure/disney-adventure-pre-arrival/" target="_blank" rel="noreferrer">Disney Adventure 사전 준비 ↗</a></div>
       </section>
 
       <TravelExpenses />

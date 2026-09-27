@@ -185,6 +185,33 @@ em { color: var(--ocean); font-family: var(--font-display), Georgia, serif; font
 .risk-note strong { color: #ffcc7a; }
 .risk-note b { color: white; margin-right: 7px; }
 
+.checkin-section { background: #f3f7f5; position: relative; overflow: hidden; }
+.checkin-section::before { content: "PAT"; position: absolute; right: 6vw; top: 55px; color: rgba(19,112,123,.055); font: 700 140px/.8 var(--font-display), Georgia, serif; letter-spacing: -.08em; pointer-events: none; }
+.checkin-section > * { position: relative; z-index: 1; }
+.checkin-section .section-heading { max-width: 760px; }
+.checkin-section .section-heading h2 em { color: var(--ocean); }
+.checkin-status { display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: 15px; margin: -20px 0 24px; padding: 14px 17px; border: 1px solid #c4dedd; border-left: 4px solid var(--gold); border-radius: 7px; background: #fffdf7; }
+.checkin-status span { color: var(--ocean); font-size: 10px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
+.checkin-status strong { color: #a16820; font-size: 15px; }
+.checkin-status small { color: var(--muted); font-size: 12px; }
+.checkin-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.checkin-card { min-height: 220px; padding: 25px 25px 23px; border: 1px solid #d8e6e2; border-radius: 9px; background: white; box-shadow: 0 11px 27px rgba(20,68,75,.06); display: flex; flex-direction: column; position: relative; }
+.checkin-card.featured { border: 2px solid var(--gold); box-shadow: 0 14px 30px rgba(135,104,43,.12); }
+.checkin-number { position: absolute; top: 17px; right: 20px; color: #dbe9e7; font: 700 31px var(--font-display), Georgia, serif; }
+.checkin-when { color: var(--ocean); font-size: 10.5px; font-weight: 850; letter-spacing: .1em; }
+.checkin-card h3 { margin: 13px 0 9px; font: 600 22px/1.2 var(--font-display), Georgia, serif; }
+.checkin-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.checkin-card p b { color: var(--ink); }
+.checkin-action { margin-top: auto; padding-top: 18px; color: #16727a; font-size: 11.5px; }
+.checkin-followup { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 15px; }
+.checkin-followup > div { padding: 17px 19px; border-radius: 7px; background: var(--navy); color: white; display: flex; flex-direction: column; }
+.checkin-followup span { color: var(--gold); font-size: 9.5px; font-weight: 850; letter-spacing: .16em; }
+.checkin-followup strong { margin: 7px 0 5px; font-size: 14px; }
+.checkin-followup small { color: #b6cbd4; font-size: 11.5px; line-height: 1.55; }
+.checkin-sources { display: flex; flex-wrap: wrap; align-items: center; gap: 17px; margin-top: 19px; color: #7d989e; font-size: 10.5px; }
+.checkin-sources span { color: var(--ocean); font-weight: 850; letter-spacing: .12em; }
+.checkin-sources a { color: #377e86; text-decoration: underline; text-underline-offset: 3px; }
+
 .hotel-section { background: #eef3f1; }
 .hotel-heading { max-width: none; display: grid; grid-template-columns: 1fr 280px; gap: 70px; align-items: end; }
 .hotel-heading > div:first-child { max-width: 750px; }
@@ -903,6 +930,15 @@ footer { font-size: 12px; }
   .section-heading { margin-bottom: 34px; }
   .section-heading h2 { font-size: 32px; line-height: 1.2; }
   .section-heading p { font-size: 15px; line-height: 1.7; }
+  .checkin-section::before { right: 18px; top: 48px; font-size: 86px; }
+  .checkin-status { grid-template-columns: 1fr; gap: 5px; margin-top: -10px; }
+  .checkin-status strong { font-size: 16px; }
+  .checkin-status small { line-height: 1.55; }
+  .checkin-grid, .checkin-followup { grid-template-columns: 1fr; }
+  .checkin-card { min-height: 0; padding: 22px 20px; }
+  .checkin-card h3 { font-size: 21px; }
+  .checkin-action { margin-top: 20px; }
+  .checkin-sources { gap: 11px 15px; line-height: 1.5; }
   .itinerary-line { grid-template-columns: 1fr; }
   .itinerary-line::before { display: none; }
   .info-ribbon, .risk-note { align-items: flex-start; flex-direction: column; }
