@@ -23,6 +23,16 @@
 .expense-cruise > a { color: #045c9e; text-decoration: underline; }
 .expense-cruise + .expense-table-wrap { margin-top: 18px; }
 .expense-footnote { font-size: 15px; line-height: 1.8; color: #667389; margin-top: 18px; }
+.expense-category { margin: 16px 0; padding: 20px; border: 1px solid #dbe5ec; border-radius: 12px; min-width: 0; }
+.expense-category > summary { cursor: pointer; font-size: 18px; font-weight: 700; overflow-wrap: anywhere; }
+.expense-category[open] > summary { margin-bottom: 18px; }
+.expense-category p { margin: 14px 0; line-height: 1.7; }
+.expense-category a { color: #045c9e; text-decoration: underline; }
+.expense-pending { margin-top: 24px; padding: 24px; background: #f0f5f8; border-radius: 12px; line-height: 1.8; }
+.expense-pending h3 { font-size: 20px; }
+.expense-pending h3 small { display: block; font-size: 15px; font-weight: 400; color: #667389; }
+.expense-pending ul { padding-left: 22px; margin: 12px 0; }
+.expense-pending p { font-size: 15px; }
 .flight-documents { margin-top: 40px; scroll-margin-top: 90px; }
 .flight-documents h3 { font-size: 24px; }
 .flight-documents > p { font-size: 16px; color: #b6cbdc; margin: 10px 0 20px; }

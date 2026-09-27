@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { flightPayments, airfareTotal, seatTotal, flightPaidTotal, won } from "./flightPayments";
-import { cruisePayments, cruisePaidCents, cruisePaymentStatementUrl, usd } from "./cruisePayments";
+import { flightPayments, airfareTotal, seatTotal, won } from "./flightPayments";
+import { cruisePaymentStatementUrl } from "./cruisePayments";
+import TravelExpenses from "./TravelExpenses";
 import SwissotelStay from "./SwissotelStay";
 import DusitStay from "./DusitStay";
-import { hotelBooking } from "./hotelBooking";
 
 const publicBasePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const assetPath = (path: string) => `${publicBasePath}${path}`;
@@ -447,7 +447,7 @@ const initialChecklist = [
   { id: "passport-copy", label: "여권 사본 제출", meta: "출발 1개월 전까지 여행사 전달" },
   { id: "balance", label: "크루즈 잔금 결제 완료", meta: "2026.09.10 · US$2,289.40 납부 · 잔액 0" },
   { id: "hotel", label: "두짓타니 1박 예약·결제 완료", meta: "12/30–31 · ₩393,021 · 환불 불가" },
-  { id: "hotel-details", label: "호텔 문의 답변 확인", meta: "9/18 전송 · 4인 조식 포함 여부 / 추가 침구 요금" },
+  { id: "hotel-details", label: "호텔 답변의 아동 나이·조식 요금 재확인", meta: "10세·8세 전달 완료 · 호텔 답변의 ‘2세’ 표기와 불일치" },
   { id: "app", label: "Disney Cruise Line 앱 준비", meta: "온라인 체크인·활동 예약 일정 확인" },
   { id: "pixie-plan", label: "Pixie Dust 구성 확정", meta: "가볍고 식품이 아닌 선물 · 8개 내외" },
   { id: "pixie-pack", label: "Pixie Dust 개별 포장", meta: "스티커·팔찌·미니 퍼즐 중심" },
@@ -518,7 +518,7 @@ export default function DisneyCruisePage() {
         <nav id="primary-navigation" className={mobileNavOpen ? "open" : ""} aria-label="주요 섹션" onClick={() => setMobileNavOpen(false)}>
           <a href="#voyage">항해 일정</a>
           <a href="#flights">항공</a>
-          <a href="#expenses">지출</a>
+          <a href="#expenses">여행 경비</a>
           <a href="#hotels">호텔</a>
           <a href="#stateroom">객실</a>
           <a href="#activities">Activity</a>
@@ -609,54 +609,14 @@ export default function DisneyCruisePage() {
         <div className="risk-note"><strong>승선 전날 도착</strong><span>12/30 두짓타니 1박 예약 완료</span><span>항구 도착은 배정 PAT 기준</span></div>
       </section>
 
-      <section className="section expense-section" id="expenses">
-        <div className="section-heading">
-          <span className="kicker">TRAVEL SPENDING</span>
-          <h2>돈 쓴 내역, <em>결제 완료 기준</em></h2>
-          <p>결제 완료 금액 · 원화와 USD 별도 집계</p>
-        </div>
-        <div className="expense-summary">
-          <article><span>항공권 · 성인 2 + 어린이 2</span><strong>{won(airfareTotal)}</strong><small>운임·유류할증료·세금 포함</small></article>
-          <article><span>귀국편 유료좌석 · 4명</span><strong>{won(seatTotal)}</strong><small>40,400원 × 4 · EMD 영수증</small></article>
-          <article className="expense-total"><span>항공 관련 결제 합계</span><strong>{won(flightPaidTotal)}</strong><small>2026.09.13 결제 완료</small></article>
-        </div>
-        <div className="expense-table-wrap">
-          <table className="expense-table">
-            <caption>2026년 9월 13일 항공 결제 상세 · 원화</caption>
-            <thead><tr><th scope="col">구분</th><th scope="col">왕복 항공권</th><th scope="col">귀국 좌석</th><th scope="col">합계</th><th scope="col">증빙</th></tr></thead>
-            <tbody>{flightPayments.map((item) => (
-              <tr key={item.label}><th scope="row">{item.label}</th><td>{won(item.airfare)}</td><td>{won(item.seatFee)}</td><td>{won(item.airfare + item.seatFee)}</td><td><a href={item.receiptUrl} target="_blank" rel="noreferrer">항공권 ↗</a><a href={item.seatReceiptUrl} target="_blank" rel="noreferrer">좌석 ↗</a></td></tr>
-            ))}</tbody>
-            <tfoot><tr><th scope="row">4인 합계</th><td>{won(airfareTotal)}</td><td>{won(seatTotal)}</td><td>{won(flightPaidTotal)}</td><td>결제 완료</td></tr></tfoot>
-          </table>
-        </div>
-        <div className="expense-cruise">
-          <div><span>크루즈 전액 결제 완료 · 2026.09.10</span><strong>{usd(cruisePaidCents)}</strong><small>예약금 + 잔금 · 남은 금액 0 · 원화 청구액 미확인</small></div>
-          <a href={cruisePaymentStatementUrl} target="_blank" rel="noreferrer">최종 결제내역서 ↗</a>
-        </div>
-        <div className="expense-table-wrap">
-          <table className="expense-table">
-            <caption>크루즈 결제 상세 · USD · 2026.09.10 발행 내역서 기준</caption>
-            <thead><tr><th scope="col">결제일</th><th scope="col">명목</th><th scope="col">결제방식</th><th scope="col">결제액</th></tr></thead>
-            <tbody>{cruisePayments.map((item) => (
-              <tr key={item.label}><th scope="row">{item.date}</th><td>{item.label}</td><td>{item.method}</td><td>{usd(item.amountCents)}</td></tr>
-            ))}</tbody>
-            <tfoot><tr><th scope="row">총 납부액</th><td colSpan={2}>전액 결제 완료</td><td>{usd(cruisePaidCents)}</td></tr></tfoot>
-          </table>
-        </div>
-        <div className="expense-cruise">
-          <div><span>두짓타니 라구나 1박 · {hotelBooking.paidDate} 결제 완료</span><strong>{won(hotelBooking.paid)}</strong><small>객실료 {won(hotelBooking.roomCharge)} + 세금 {won(hotelBooking.tax)} · 환불 불가</small></div>
-          <a href={hotelBooking.confirmationUrl} target="_blank" rel="noreferrer">예약·결제 확인 메일 ↗</a>
-        </div>
-        <p className="expense-footnote">결제 합계: {won(flightPaidTotal + hotelBooking.paid)} + {usd(cruisePaidCents)} · 크루즈 원화 청구액 미확인 · 미결제 교통·추가금 제외</p>
-      </section>
+      <TravelExpenses />
 
       <section className="section hotel-section" id="hotels">
         <div className="section-heading hotel-heading">
           <div>
             <span className="kicker">1 NIGHT IN SINGAPORE</span>
             <h2>승선 전 하루, <em>두짓타니 예약 완료</em></h2>
-            <p>12/30–31 · 공항 인근 라구나 · 조식 포함</p>
+            <p>12/30–31 · 공항 인근 라구나 · 성인 2명 조식 포함</p>
           </div>
           <div className="hotel-verdict"><span>BOOKED &amp; PAID</span><strong>Dusit Thani Laguna</strong><small>총 ₩393,021 결제 완료 · 환불 불가</small></div>
         </div>
@@ -800,17 +760,6 @@ export default function DisneyCruisePage() {
 
         </details>
 
-        <div className="route-panel">
-          <div className="route-intro"><span>TRANSFER PLAN</span><h3>T4 → 두짓타니 → 항구</h3><p>택시 이동 예정 · 차량 미예약</p></div>
-          <div className="route-flow">
-            <div className="route-stop"><i>✈</i><span><small>12/30 20:25</small><strong>Changi Airport · T4</strong><em>입국·수하물 수령</em></span></div>
-            <div className="route-leg"><b>약 10–20분</b><span>택시 · 호출 견적 확인</span></div>
-            <div className="route-stop hotel"><i>⌂</i><span><small>12/30–31</small><strong>Dusit Thani Laguna</strong><em>늦은 저녁 체크인 · 1박 확정</em></span></div>
-            <div className="route-leg"><b>약 25–35분</b><span>계획용 추정 · 배차 별도</span></div>
-            <div className="route-stop port"><i>⚓</i><span><small>12/31</small><strong>Marina Bay Cruise Centre</strong><em>배정 PAT에 맞춰 도착</em></span></div>
-          </div>
-        </div>
-        <p className="price-disclaimer">차량 이동시간은 예상치 · 배차 대기·짐 싣는 시간 별도</p>
       </section>
 
       <section className="section room-section" id="stateroom">
